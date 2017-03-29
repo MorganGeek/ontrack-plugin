@@ -44,10 +44,10 @@ mvn clean verify --batch-mode
         }
         stage('Release') {
             steps {
-                sh """\
+                sh '''\
 #!/bin/bash
-echo "Publishing ${env.VERSION}"
-"""
+echo "Publishing ${VERSION}"
+'''
 
             }
         }
