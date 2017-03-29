@@ -1,55 +1,50 @@
 pipeline {
-
-    agent {
-        docker {
-            image 'maven:3.3.9-jdk-7'
-            label 'docker'
-        }
+  agent {
+    docker {
+      image 'maven:3.3.9-jdk-7'
+      label 'docker'
     }
-
-    options {
-        // General Jenkins job properties
-        buildDiscarder(logRotator(numToKeepStr: '40'))
-        // Timestamps
-        timestamps()
-    }
-
-    stages {
-        stage('Build') {
-            steps {
-                sh '''\
-#!/bin/bash
+    
+  }
+  stages {
+    stage('Build') {
+      steps {
+        sh '''#!/bin/bash
 mvn clean verify --batch-mode
 '''
-            }
-            post {
-                always {
-                    junit '**/target/surefire-reports/*.xml'
-                }
-            }
+      }
+      post {
+        always {
+          junit '**/target/surefire-reports/*.xml'
+          
         }
-        stage('Release approval') {
-            agent none
-            steps {
-                script {
-                    env.VERSION = input(
-                            id: 'versionInput',
-                            message: "Publishing this version?",
-                            parameters: [
-                                    string(name: 'VERSION', description: 'Version to create')
-                            ]
-                    )
-                }
-            }
-        }
-        stage('Release') {
-            steps {
-                sh '''\
-#!/bin/bash
-echo "Publishing ${VERSION}"
-'''
-
-            }
-        }
+        
+      }
     }
+    stage('Release approval') {
+      steps {
+        script {
+          env.VERSION = input(
+            id: 'versionInput',
+            message: "Publishing this version?",
+            parameters: [
+              string(name: 'VERSION', description: 'Version to create')
+            ]
+          )
+        }
+        
+      }
+    }
+    stage('Release') {
+      steps {
+        sh '''#!/bin/bash
+echo "Setting ${VERSION} version"
+mvn versions:set -DgenerateBackupPoms=false -DnewVersion=${VERSION}'''
+      }
+    }
+  }
+  options {
+    buildDiscarder(logRotator(numToKeepStr: '40'))
+    timestamps()
+  }
 }
