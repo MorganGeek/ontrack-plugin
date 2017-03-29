@@ -19,7 +19,7 @@ pipeline {
             steps {
                 sh '''\
 #!/bin/bash
-mvn clean verify
+mvn clean verify --batch-mode
 '''
             }
             post {
