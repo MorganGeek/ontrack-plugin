@@ -28,10 +28,12 @@ mvn clean verify --batch-mode
                 }
             }
         }
+        def version = null
         stage('Release approval') {
+            agent none
             steps {
-                input(
-                        id: 'version',
+                version = input(
+                        id: 'versionInput',
                         message: "Publishing this version?",
                         parameters: [
                                 string(name: 'VERSION', description: 'Version to create')
@@ -41,7 +43,11 @@ mvn clean verify --batch-mode
         }
         stage('Release') {
             steps {
-                echo "Publishing ${version}"
+                sh """\
+#!/bin/bash
+echo "Publishing ${version}"
+"""
+
             }
         }
     }
