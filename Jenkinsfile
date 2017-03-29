@@ -31,20 +31,22 @@ mvn clean verify --batch-mode
         stage('Release approval') {
             agent none
             steps {
-                input(
-                        id: 'versionInput',
-                        message: "Publishing this version?",
-                        parameters: [
-                                string(name: 'VERSION', description: 'Version to create')
-                        ]
-                )
+                script {
+                    env.VERSION = input(
+                            id: 'versionInput',
+                            message: "Publishing this version?",
+                            parameters: [
+                                    string(name: 'VERSION', description: 'Version to create')
+                            ]
+                    )
+                }
             }
         }
         stage('Release') {
             steps {
                 sh """\
 #!/bin/bash
-echo "Publishing ${params.VERSION}"
+echo "Publishing ${env.VERSION}"
 """
 
             }
