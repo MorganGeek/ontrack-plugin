@@ -31,6 +31,7 @@ mvn clean verify
         stage('Release approval') {
             steps {
                 input(
+                        id: 'version',
                         message: "Publishing this version?",
                         parameters: [
                                 string(name: 'VERSION', description: 'Version to create')
@@ -40,7 +41,7 @@ mvn clean verify
         }
         stage('Release') {
             steps {
-                echo "Publishing ${params.VERSION}"
+                echo "Publishing ${version}"
             }
         }
     }
