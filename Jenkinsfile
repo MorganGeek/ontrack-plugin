@@ -30,12 +30,17 @@ mvn clean verify
         }
         stage('Release approval') {
             steps {
-                input "Publishing this version?"
+                input(
+                        message: "Publishing this version?",
+                        parameters: [
+                                string(name: 'VERSION', description: 'Version to create')
+                        ]
+                )
             }
         }
         stage('Release') {
             steps {
-                echo "Published!"
+                echo "Publishing ${params.VERSION}"
             }
         }
     }
