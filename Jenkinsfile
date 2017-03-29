@@ -28,5 +28,15 @@ mvn clean verify
                 }
             }
         }
+        stage('Release approval') {
+            steps {
+                input "Publishing this version?"
+            }
+        }
+        stage('Release') {
+            steps {
+                echo "Published!"
+            }
+        }
     }
 }
