@@ -36,10 +36,22 @@ mvn clean verify --batch-mode
       }
     }
     stage('Release') {
+        environment {
+            GITHUB = credentials('GITHUB')
+        }
       steps {
-        sh '''#!/bin/bash
+        sh '''\
+#!/bin/bash
 echo "Setting ${VERSION} version"
-mvn versions:set -DgenerateBackupPoms=false -DnewVersion=${VERSION}'''
+git clean -xfd
+mvn versions:set -DgenerateBackupPoms=false -DnewVersion=${VERSION}
+
+echo "Tagging locally"
+git config --local user.email "jenkins@nemerosa.net"
+git config --local user.name "Jenkins"
+git commit -am "Release ${VERSION}"
+git tag "${VERSION}"
+'''
       }
     }
   }
